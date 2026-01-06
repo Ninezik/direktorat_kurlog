@@ -14,7 +14,7 @@ UPPER(nipos.custom_field__jenis_barang)custom_field__jenis_barang,
 (SUM(connote__connote_surcharge_amount *   11) /  111) AS ppnthnb,
 SUM(connote__chargeable_weight)connote__chargeable_weight
 FROM nipos.nipos
-where connote__created_at>'20240101'
+where connote__created_at>'20260101'
 and UPPER(nipos.connote__location_name) !='AGP TESTING LOCATION'
 and UPPER(nipos.connote__connote_state) not in ('CANCEL','PENDING')
 GROUP BY 1,2,3,4,5,6,7
