@@ -8,7 +8,6 @@ UPPER(connote__connote_service) AS connote__connote_service,
 connote_sender_custom_field__pks_no__to_be_verified,
 SUM(connote__connote_amount)connote__connote_amount,
 COUNT(connote__connote_code)connote__connote_code,
-SUM(connote__chargeable_weight)connote__chargeable_weight,
 SUM(connote__connote_amount)/(1+(1.1/100)) as pendapatan,
 SUM(connote__connote_amount)-SUM(connote__connote_amount)/(1+(1.1/100)) as pajak,
 SUM(
@@ -35,5 +34,34 @@ WHERE connote__created_at > '20260106'
 AND UPPER(connote__location_name) != 'AGP TESTING LOCATION'
 AND UPPER(connote__connote_state) NOT IN ('CANCEL','PENDING')
 AND connote__connote_service != 'LNINCOMING'
+GROUP BY
+1,2,3,4,5,6,7
+
+union
+
+SELECT
+DATE(t.created_at) connote__created_at,
+'AGRIPOS' customer_code,
+'AGRIPOS' custom_field__jenis_barang,
+s.kota location_data_created__custom_field__nokprk,
+'AGRIPOS' transform__channel,
+'AGRIPOS' connote__connote_service,
+null connote_sender_custom_field__pks_no__to_be_verified,
+--SUM(td.qty) AS total_qty,
+SUM(t.total) connote__connote_amount,
+COUNT(DISTINCT t.id) connote__connote_code,
+SUM(((p.price - p.base) * td.qty) / (1+(1.1/100))) pendapatan,
+SUM((p.price - p.base) * td.qty)
+- SUM(((p.price - p.base) * td.qty) / 1.011) pajak,
+0 fee_cod
+FROM agripost.transactions t
+LEFT JOIN agripost.transaction_details td
+ON t.id = td.transaction_id
+LEFT JOIN agripost.stores s
+ON t.store_id = s.id
+LEFT JOIN agripost.products p
+ON td.product_id = p.id
+WHERE t.store_id NOT IN (1,2,3,4,5,6,7,8,9,10,11,12)
+and UPPER(t.status) ='SELESAI'
 GROUP BY
 1,2,3,4,5,6,7
