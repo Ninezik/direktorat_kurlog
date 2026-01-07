@@ -99,3 +99,34 @@ SELECT
     0 AS fee_cod
 FROM posint.LN_INCOMING_VA
 group by 1,2,3,4,5,6,7
+
+union
+SELECT 
+    date(tgl_billing) connote__created_at,
+    customer_code,
+    'GLID'  custom_field__jenis_barang,
+    kode_nopen location_data_created__custom_field__nokprk,
+    'GLID' transform__channel,
+    service_code connote__connote_service,
+    'GLID' connote_sender_custom_field__pks_no__to_be_verified,
+    SUM(total_amount)  connote__connote_amount,
+    COUNT(DISTINCT order_code) connote__connote_code,
+    SUM(
+        total_amount - 
+        (CASE 
+            WHEN LOWER(jenis_produk) LIKE '%include%'
+            THEN total_amount /(1+(1.1/100))
+            ELSE total_amount 
+        END)
+    ) AS pajak,
+    SUM(
+        CASE 
+            WHEN LOWER(jenis_produk) LIKE '%include%'
+            THEN total_amount / (1+(1.1/100))
+            ELSE total_amount 
+        END
+    ) AS pendapatan,
+    0 AS fee_cod
+FROM glid.glid g 
+GROUP BY 
+1,2,3,4,5,6,7
