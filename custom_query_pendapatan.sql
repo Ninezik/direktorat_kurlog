@@ -28,7 +28,7 @@ ELSE 0
 END
 ) AS fee_cod
 FROM nipos.nipos
-WHERE connote__created_at > '20260106'
+WHERE connote__created_at > '20250101'
 AND UPPER(connote__location_name) != 'AGP TESTING LOCATION'
 AND UPPER(connote__connote_state) NOT IN ('CANCEL','PENDING')
 AND connote__connote_service != 'LNINCOMING'
