@@ -26,7 +26,8 @@ ELSE koli_data__koli_custom_field__harga_barang * 0.02
 END
 ELSE 0
 END
-) AS fee_cod
+) AS fee_cod,
+'NIPOS' sumber
 FROM nipos.nipos
 WHERE connote__created_at > '20250101'
 AND UPPER(connote__location_name) != 'AGP TESTING LOCATION'
@@ -40,7 +41,6 @@ GROUP BY
 1,2,3,4,5,6,7
 
 union
-
 SELECT
 DATE(t.created_at) connote__created_at,
 'AGRIPOS' customer_code,
@@ -54,7 +54,8 @@ COUNT(DISTINCT t.id) connote__connote_code,
 SUM(((p.price - p.base) * td.qty) / (1+(1.1/100))) pendapatan,
 SUM((p.price - p.base) * td.qty)
 - SUM(((p.price - p.base) * td.qty) / (1+(1.1/100))) pajak,
-0 fee_cod
+0 fee_cod,
+'AGRIPOS' sumber
 FROM agripost.transactions t
 LEFT JOIN agripost.transaction_details td
 ON t.id = td.transaction_id
@@ -78,7 +79,8 @@ SUM(total_fee_idr)connote__connote_amount,
 COUNT(distinct no_resi)connote__connote_code,
 SUM(total_fee_idr)/(1+(1.1/100)) pendapatan,
 SUM(total_fee_idr)-(SUM(total_fee_idr)/(1+(1.1/100))) pajak,
-0 fee_cod
+0 fee_cod,
+'KARGO HAJI' sumber
 FROM kargo.kargo_haji_kolekting
 where UPPER(status)='MANIFEST'
 and is_paid='t'
@@ -98,7 +100,8 @@ SELECT
     COUNT(distinct va_number) AS connote__connote_code,
     SUM(BSU_BLB + BSU_BEASIMPAN + BSU_HANDLING) AS pendapatan,
     SUM(ppn_blb + ppn_beasimpan + ppn_handling) AS pajak,
-    0 AS fee_cod
+    0 AS fee_cod,
+    'LN_INCOMING_VA' sumber
 FROM posint.LN_INCOMING_VA
 group by 1,2,3,4,5,6,7
 
@@ -128,7 +131,8 @@ SELECT
             ELSE total_amount 
         END
     ) AS pendapatan,
-    0 AS fee_cod
+    0 AS fee_cod,
+    'GLID' sumber
 FROM glid.glid g 
 GROUP BY 
 1,2,3,4,5,6,7
@@ -146,6 +150,7 @@ SELECT
     COUNT(connote__connote_code)connote__connote_code,
     SUM(connote__connote_amount)/(1+(1.1/100)) as pendapatan,
     SUM(connote__connote_amount)-SUM(connote__connote_amount)/(1+(1.1/100)) as pajak,
-    SUM(goods_value)*(0.5/100) fee_cod
+    SUM(goods_value)*(0.5/100) fee_cod,
+    'SHOPEE COD' sumber
 FROM v_shopee_cod_detail
 GROUP BY 1,2,3,4,5,6,7
