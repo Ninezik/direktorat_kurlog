@@ -13,9 +13,7 @@ SUM(connote__connote_amount)-SUM(connote__connote_amount)/(1+(1.1/100)) as pajak
 SUM(
 CASE
 -- Hitung fee hanya jika benar-benar COD dan bukan Shopee
-WHEN (UPPER(custom_field__cod)!='NONCOD'
-AND (customer_code!='DAGSHOPEE04120A'
-or nipos.customer_code is null))
+WHEN UPPER(custom_field__cod)!='NONCOD'
 THEN
 CASE
 WHEN koli_data__koli_custom_field__harga_barang < 100000
@@ -34,6 +32,10 @@ WHERE connote__created_at > '20260106'
 AND UPPER(connote__location_name) != 'AGP TESTING LOCATION'
 AND UPPER(connote__connote_state) NOT IN ('CANCEL','PENDING')
 AND connote__connote_service != 'LNINCOMING'
+AND NOT (
+    UPPER(nipos.customer_code) = 'DAGSHOPEE04120A'
+    AND UPPER(nipos.custom_field__cod)!= 'NONCOD'
+)
 GROUP BY
 1,2,3,4,5,6,7
 
@@ -130,3 +132,20 @@ SELECT
 FROM glid.glid g 
 GROUP BY 
 1,2,3,4,5,6,7
+
+union
+SELECT 
+    date(connote__created_at) AS connote__created_at, 
+    customer_code, 
+    custom_field__jenis_barang, 
+    location_data_created__custom_field__nokprk, 
+    transform__channel, 
+    connote__connote_service, 
+    connote_sender_custom_field__pks_no__to_be_verified,
+    SUM(connote__connote_amount)connote__connote_amount, 
+    COUNT(connote__connote_code)connote__connote_code,
+    SUM(connote__connote_amount)/(1+(1.1/100)) as pendapatan,
+    SUM(connote__connote_amount)-SUM(connote__connote_amount)/(1+(1.1/100)) as pajak,
+    SUM(goods_value)*(0.5/100) fee_cod
+FROM v_shopee_cod_detail
+GROUP BY 1,2,3,4,5,6,7
