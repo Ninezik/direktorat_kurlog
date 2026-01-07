@@ -82,3 +82,20 @@ where UPPER(status)='MANIFEST'
 and is_paid='t'
 GROUP BY
 1,2,3,4,5,6,7
+
+union
+SELECT  
+    wkt_payment AS connote__created_at,
+    'LN_INCOMING_VA' AS customer_code,
+    'LN_INCOMING_VA' AS custom_field__jenis_barang,
+    'LN_INCOMING_VA' AS location_data_created__custom_field__nokprk,
+    'LN_INCOMING_VA' AS transform__channel,
+    'LN_INCOMING_VA' AS connote__connote_service,
+    'LN_INCOMING_VA' AS connote_sender_custom_field__pks_no__to_be_verified,
+    SUM(BSU_BLB + BSU_BEASIMPAN + BSU_HANDLING + ppn_blb + ppn_beasimpan + ppn_handling) AS connote__connote_amount,
+    COUNT(distinct va_number) AS connote__connote_code,
+    SUM(BSU_BLB + BSU_BEASIMPAN + BSU_HANDLING) AS pendapatan,
+    SUM(ppn_blb + ppn_beasimpan + ppn_handling) AS pajak,
+    0 AS fee_cod
+FROM posint.LN_INCOMING_VA
+group by 1,2,3,4,5,6,7
