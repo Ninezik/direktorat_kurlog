@@ -151,6 +151,6 @@ SELECT
     SUM(connote__connote_amount)/(1+(1.1/100)) as pendapatan,
     SUM(connote__connote_amount)-SUM(connote__connote_amount)/(1+(1.1/100)) as pajak,
     SUM(goods_value)*(0.5/100) fee_cod,
-    'SHOPEE dan COD SHOPEE' sumber
+    'SHOPEE COD' sumber
 FROM nipos.v_shopee_cod_detail
 GROUP BY 1,2,3,4,5,6,7
