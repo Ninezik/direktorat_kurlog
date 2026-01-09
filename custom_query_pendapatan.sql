@@ -117,6 +117,13 @@ SELECT
     SUM(total_amount)  connote__connote_amount,
     COUNT(DISTINCT order_code) connote__connote_code,
     SUM(
+        CASE 
+            WHEN LOWER(jenis_produk) LIKE '%include%'
+            THEN total_amount / (1+(1.1/100))
+            ELSE total_amount 
+        END
+    ) AS pendapatan,
+    SUM(
         total_amount - 
         (CASE 
             WHEN LOWER(jenis_produk) LIKE '%include%'
@@ -124,13 +131,6 @@ SELECT
             ELSE total_amount 
         END)
     ) AS pajak,
-    SUM(
-        CASE 
-            WHEN LOWER(jenis_produk) LIKE '%include%'
-            THEN total_amount / (1+(1.1/100))
-            ELSE total_amount 
-        END
-    ) AS pendapatan,
     0 AS fee_cod,
     'GLID' sumber
 FROM glid.glid g 
