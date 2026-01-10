@@ -10,3 +10,9 @@ custom_field__cod
 from nipos.nipos
 where nipos.nipos.custom_field__cod_value >1
 limit 10
+
+-- cod
+-- cod_value=nilai_barang
+
+-- ccod
+-- cod_value=nilai_barang+connote_amount
