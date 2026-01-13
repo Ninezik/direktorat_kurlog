@@ -105,7 +105,7 @@ GROUP BY
 
 union
 SELECT  
-    wkt_payment AS connote__created_at,
+    date(wkt_payment) AS connote__created_at,
     'LN_INCOMING_VA' AS customer_code,
     'LN_INCOMING_VA' AS custom_field__jenis_barang,
     'LN_INCOMING_VA' AS location_data_created__custom_field__nokprk,
