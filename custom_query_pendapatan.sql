@@ -43,7 +43,8 @@ END
 ELSE 0
 END
 ) AS fee_cod,
-'NIPOS' sumber
+'NIPOS' sumber,
+SUM(nipos.nipos.connote__chargeable_weight)connote__chargeable_weight
 FROM nipos.nipos
 WHERE connote__created_at > '20250101'
 AND UPPER(connote__location_name) != 'AGP TESTING LOCATION'
