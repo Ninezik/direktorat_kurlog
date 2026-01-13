@@ -8,11 +8,27 @@ UPPER(connote__connote_service) AS connote__connote_service,
 connote_sender_custom_field__pks_no__to_be_verified,
 SUM(connote__connote_amount)connote__connote_amount,
 COUNT(connote__connote_code)connote__connote_code,
-SUM(connote__connote_amount)/(1+(1.1/100)) as pendapatan,
-SUM(connote__connote_amount)-SUM(connote__connote_amount)/(1+(1.1/100)) as pajak,
+SUM(
+  CASE 
+    WHEN UPPER(custom_field__jenis_barang) LIKE '%DOC%'
+      OR UPPER(custom_field__jenis_barang) LIKE '%DOK%'
+      OR custom_field__jenis_barang IS NULL
+    THEN connote__connote_amount
+    ELSE connote__connote_amount/(1+(1.1/100))
+  END
+) AS pendapatan,
+SUM(
+  CASE 
+    WHEN UPPER(custom_field__jenis_barang) LIKE '%DOC%'
+      OR UPPER(custom_field__jenis_barang) LIKE '%DOK%'
+      OR custom_field__jenis_barang IS NULL
+    THEN 0
+    ELSE connote__connote_amount-(connote__connote_amount/(1+(1.1/100)))
+  END
+) AS pajak,
 SUM(
 CASE
--- Hitung fee hanya jika benar-benar COD dan bukan Shopee
+-- COD dan bukan Shopee
 WHEN UPPER(custom_field__cod)!='NONCOD'
 THEN
 CASE
