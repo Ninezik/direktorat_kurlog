@@ -181,6 +181,6 @@ SELECT
     SUM(connote__connote_amount)-SUM(connote__connote_amount)/(1+(1.1/100)) as pajak,
     SUM(goods_value)*(0.5/100) fee_cod,
     'SHOPEE COD' sumber,
-    SUM(0)connote__chargeable_weight
+    SUM(connote__chargeable_weight)connote__chargeable_weight
 FROM nipos.v_shopee_cod_detail
 GROUP BY 1,2,3,4,5,6,7,8
