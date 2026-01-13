@@ -1,5 +1,6 @@
 select
 DATE(connote__created_at) AS connote__created_at,
+date_part('hour',connote__created_at)jam,
 UPPER(customer_code) AS customer_code,
 upper(custom_field__jenis_barang)custom_field__jenis_barang,
 location_data_created__custom_field__nokprk,
@@ -55,11 +56,12 @@ AND NOT (
     AND UPPER(nipos.custom_field__cod)!= 'NONCOD'
 )
 GROUP BY
-1,2,3,4,5,6,7
+1,2,3,4,5,6,7,8
 
 union
 SELECT
 DATE(t.created_at) connote__created_at,
+date_part('hour',t.created_at)jam,
 'AGRIPOS' customer_code,
 'AGRIPOS' custom_field__jenis_barang,
 s.kota location_data_created__custom_field__nokprk,
@@ -84,11 +86,12 @@ ON td.product_id = p.id
 WHERE t.store_id NOT IN (1,2,3,4,5,6,7,8,9,10,11,12)
 and UPPER(t.status) ='SELESAI'
 GROUP BY
-1,2,3,4,5,6,7
+1,2,3,4,5,6,7,8
 
 
 union
 SELECT date(created_at)created_at ,
+date_part('hour',created_at)jam,
 'KARGO HAJI' customer_code,
 'KARGO HAJI' custom_field__jenis_barang,
 'KARGO HAJI' location_data_created__custom_field__nokprk,
@@ -106,11 +109,12 @@ FROM kargo.kargo_haji_kolekting
 where UPPER(status)='MANIFEST'
 and is_paid='t'
 GROUP BY
-1,2,3,4,5,6,7
+1,2,3,4,5,6,7,8
 
 union
 SELECT  
     date(wkt_payment) AS connote__created_at,
+    date_part('hour',wkt_payment)jam,
     'LN_INCOMING_VA' AS customer_code,
     'LN_INCOMING_VA' AS custom_field__jenis_barang,
     'LN_INCOMING_VA' AS location_data_created__custom_field__nokprk,
@@ -125,11 +129,12 @@ SELECT
     'LN_INCOMING_VA' sumber,
     SUM(jml_berat)connote__chargeable_weight
 FROM posint.LN_INCOMING_VA
-group by 1,2,3,4,5,6,7
+group by 1,2,3,4,5,6,7,8
 
 union
 SELECT 
     date(tgl_billing) connote__created_at,
+    date_part('hour',tgl_billing::timestamp)jam,
     customer_code,
     'GLID'  custom_field__jenis_barang,
     kode_nopen location_data_created__custom_field__nokprk,
@@ -158,11 +163,12 @@ SELECT
     SUM(0)connote__chargeable_weight
 FROM glid.glid g 
 GROUP BY 
-1,2,3,4,5,6,7
+1,2,3,4,5,6,7,8
 
 union
 SELECT 
     date(connote__created_at) AS connote__created_at, 
+    date_part('hour',connote__created_at)jam,
     customer_code, 
     custom_field__jenis_barang, 
     location_data_created__custom_field__nokprk, 
@@ -177,4 +183,4 @@ SELECT
     'SHOPEE COD' sumber,
     SUM(0)connote__chargeable_weight
 FROM nipos.v_shopee_cod_detail
-GROUP BY 1,2,3,4,5,6,7
+GROUP BY 1,2,3,4,5,6,7,8
