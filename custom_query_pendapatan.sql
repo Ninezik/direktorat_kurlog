@@ -72,7 +72,8 @@ SUM(((p.price - p.base) * td.qty) / (1+(1.1/100))) pendapatan,
 SUM((p.price - p.base) * td.qty)
 - SUM(((p.price - p.base) * td.qty) / (1+(1.1/100))) pajak,
 0 fee_cod,
-'AGRIPOS' sumber
+'AGRIPOS' sumber,
+SUM(td.qty)*5 connote__chargeable_weight
 FROM agripost.transactions t
 LEFT JOIN agripost.transaction_details td
 ON t.id = td.transaction_id
@@ -84,6 +85,8 @@ WHERE t.store_id NOT IN (1,2,3,4,5,6,7,8,9,10,11,12)
 and UPPER(t.status) ='SELESAI'
 GROUP BY
 1,2,3,4,5,6,7
+
+
 union
 SELECT date(created_at)created_at ,
 'KARGO HAJI' customer_code,
@@ -97,7 +100,8 @@ COUNT(distinct no_resi)connote__connote_code,
 SUM(total_fee_idr)/(1+(1.1/100)) pendapatan,
 SUM(total_fee_idr)-(SUM(total_fee_idr)/(1+(1.1/100))) pajak,
 0 fee_cod,
-'KARGO HAJI' sumber
+'KARGO HAJI' sumber,
+SUM(total_weight)connote__chargeable_weight
 FROM kargo.kargo_haji_kolekting
 where UPPER(status)='MANIFEST'
 and is_paid='t'
@@ -118,7 +122,8 @@ SELECT
     SUM(BSU_BLB + BSU_BEASIMPAN + BSU_HANDLING) AS pendapatan,
     SUM(ppn_blb + ppn_beasimpan + ppn_handling) AS pajak,
     0 AS fee_cod,
-    'LN_INCOMING_VA' sumber
+    'LN_INCOMING_VA' sumber,
+    SUM(jml_berat)connote__chargeable_weight
 FROM posint.LN_INCOMING_VA
 group by 1,2,3,4,5,6,7
 
@@ -149,7 +154,8 @@ SELECT
         END)
     ) AS pajak,
     0 AS fee_cod,
-    'GLID' sumber
+    'GLID' sumber, 
+    SUM(0)connote__chargeable_weight
 FROM glid.glid g 
 GROUP BY 
 1,2,3,4,5,6,7
@@ -168,6 +174,7 @@ SELECT
     SUM(connote__connote_amount)/(1+(1.1/100)) as pendapatan,
     SUM(connote__connote_amount)-SUM(connote__connote_amount)/(1+(1.1/100)) as pajak,
     SUM(goods_value)*(0.5/100) fee_cod,
-    'SHOPEE COD' sumber
+    'SHOPEE COD' sumber,
+    SUM(0)connote__chargeable_weight
 FROM nipos.v_shopee_cod_detail
 GROUP BY 1,2,3,4,5,6,7
