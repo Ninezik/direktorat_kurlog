@@ -168,7 +168,8 @@ SELECT
     ) AS pajak,
     0 AS fee_cod,
     'GLID' sumber, 
-    SUM(0)connote__chargeable_weight
+    SUM(0)connote__chargeable_weight,
+    SUM(0)HTNB
 FROM glid.glid g 
 GROUP BY 
 1,2,3,4,5,6,7,8
