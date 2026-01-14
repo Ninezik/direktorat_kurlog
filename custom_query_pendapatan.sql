@@ -55,7 +55,7 @@ END
 SUM(nipos.nipos.connote__chargeable_weight)connote__chargeable_weight,
 SUM(connote__connote_surcharge_amount) HTNB
 FROM nipos.nipos
-WHERE connote__created_at > '20260114'
+WHERE connote__created_at > '20250101'
 AND UPPER(connote__location_name) != 'AGP TESTING LOCATION'
 AND UPPER(connote__connote_state) NOT IN ('CANCEL','PENDING')
 AND connote__connote_service != 'LNINCOMING'
