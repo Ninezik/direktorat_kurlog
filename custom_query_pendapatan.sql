@@ -10,21 +10,28 @@ connote_sender_custom_field__pks_no__to_be_verified,
 SUM(connote__connote_amount)connote__connote_amount,
 COUNT(connote__connote_code)connote__connote_code,
 SUM(
-  CASE 
-    WHEN UPPER(custom_field__jenis_barang) LIKE '%DOC%'
-      OR UPPER(custom_field__jenis_barang) LIKE '%DOK%'
-      OR custom_field__jenis_barang IS NULL
-    THEN connote__connote_amount
-    ELSE connote__connote_amount/(1+(1.1/100))
-  END
-) AS pendapatan,
+nipos.connote__connote_service_price +nipos.connote__connote_surcharge_amount 
+)pendapatan,
+--pajak basetariff
 SUM(
   CASE 
     WHEN UPPER(custom_field__jenis_barang) LIKE '%DOC%'
       OR UPPER(custom_field__jenis_barang) LIKE '%DOK%'
       OR custom_field__jenis_barang IS NULL
     THEN 0
-    ELSE connote__connote_amount-(connote__connote_amount/(1+(1.1/100)))
+--    kiriman paket
+    ELSE 0.011*nipos.connote__connote_service_price 
+  END
+)+
+--pajak insurance htnb
+SUM(
+  CASE 
+    WHEN UPPER(custom_field__jenis_barang) LIKE '%DOC%'
+      OR UPPER(custom_field__jenis_barang) LIKE '%DOK%'
+      OR custom_field__jenis_barang IS NULL
+    THEN 0
+--    kiriman paket
+    ELSE 0.11*nipos.connote__connote_surcharge_amount 
   END
 ) AS pajak,
 SUM(
@@ -45,9 +52,10 @@ ELSE 0
 END
 ) AS fee_cod,
 'NIPOS' sumber,
-SUM(nipos.nipos.connote__chargeable_weight)connote__chargeable_weight
+SUM(nipos.nipos.connote__chargeable_weight)connote__chargeable_weight,
+SUM(connote__connote_surcharge_amount) HTNB
 FROM nipos.nipos
-WHERE connote__created_at > '20250101'
+WHERE connote__created_at > '20260114'
 AND UPPER(connote__location_name) != 'AGP TESTING LOCATION'
 AND UPPER(connote__connote_state) NOT IN ('CANCEL','PENDING')
 AND connote__connote_service != 'LNINCOMING'
