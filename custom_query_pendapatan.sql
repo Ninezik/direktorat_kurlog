@@ -135,7 +135,8 @@ SELECT
     SUM(ppn_blb + ppn_beasimpan + ppn_handling) AS pajak,
     0 AS fee_cod,
     'LN_INCOMING_VA' sumber,
-    SUM(jml_berat)connote__chargeable_weight
+    SUM(jml_berat)connote__chargeable_weight,
+    SUM(0)HTNB
 FROM posint.LN_INCOMING_VA
 group by 1,2,3,4,5,6,7,8
 
