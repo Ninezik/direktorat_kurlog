@@ -177,10 +177,31 @@ SELECT
     connote_sender_custom_field__pks_no__to_be_verified,
     SUM(connote__connote_amount)connote__connote_amount, 
     COUNT(connote__connote_code)connote__connote_code,
-    SUM(connote__connote_amount)/(1+(1.1/100)) as pendapatan,
-    SUM(connote__connote_amount)-SUM(connote__connote_amount)/(1+(1.1/100)) as pajak,
+    SUM(connote__connote_service_price +connote__connote_surcharge_amount)pendapatan,
+    SUM(
+  CASE 
+    WHEN UPPER(custom_field__jenis_barang) LIKE '%DOC%'
+      OR UPPER(custom_field__jenis_barang) LIKE '%DOK%'
+      OR custom_field__jenis_barang IS NULL
+    THEN 0
+--    kiriman paket
+    ELSE 0.011*connote__connote_service_price 
+  END
+)+
+--pajak insurance htnb
+SUM(
+  CASE 
+    WHEN UPPER(custom_field__jenis_barang) LIKE '%DOC%'
+      OR UPPER(custom_field__jenis_barang) LIKE '%DOK%'
+      OR custom_field__jenis_barang IS NULL
+    THEN 0
+--    kiriman paket
+    ELSE 0.11*connote__connote_surcharge_amount 
+  END
+) AS pajak,
     SUM(goods_value)*(0.5/100) fee_cod,
     'SHOPEE COD' sumber,
-    SUM(connote__chargeable_weight)connote__chargeable_weight
+    SUM(connote__chargeable_weight)connote__chargeable_weight,
+    SUM(connote__connote_surcharge_amount) HTNB
 FROM nipos.v_shopee_cod_detail
 GROUP BY 1,2,3,4,5,6,7,8
