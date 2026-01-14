@@ -83,7 +83,8 @@ SUM((p.price - p.base) * td.qty)
 - SUM(((p.price - p.base) * td.qty) / (1+(1.1/100))) pajak,
 0 fee_cod,
 'AGRIPOS' sumber,
-SUM(td.qty)*5 connote__chargeable_weight
+SUM(td.qty)*5 connote__chargeable_weight,
+SUM(0)HTNB
 FROM agripost.transactions t
 LEFT JOIN agripost.transaction_details td
 ON t.id = td.transaction_id
@@ -112,7 +113,8 @@ SUM(total_fee_idr)/(1+(1.1/100)) pendapatan,
 SUM(total_fee_idr)-(SUM(total_fee_idr)/(1+(1.1/100))) pajak,
 0 fee_cod,
 'KARGO HAJI' sumber,
-SUM(total_weight)connote__chargeable_weight
+SUM(total_weight)connote__chargeable_weight,
+SUM(0)HTNB
 FROM kargo.kargo_haji_kolekting
 where UPPER(status)='MANIFEST'
 and is_paid='t'
