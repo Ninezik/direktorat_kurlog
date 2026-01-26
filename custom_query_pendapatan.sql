@@ -215,5 +215,5 @@ SUM(
     'SHOPEE COD' sumber,
     SUM(connote__chargeable_weight)connote__chargeable_weight,
     SUM(connote__connote_surcharge_amount) HTNB
-FROM nipos.v_shopee_cod_detail
+FROM nipos.v_nipos_cod_shopee_dashboard
 GROUP BY 1,2,3,4,5,6,7,8
