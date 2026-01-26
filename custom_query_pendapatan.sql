@@ -43,10 +43,10 @@ CASE
 WHEN koli_data__koli_custom_field__harga_barang < 100000
 THEN 2000
 WHEN customer_code IN ('LOGKIRIMAJA04550A','LOGAUTOKIRIM05603A','LOGAUTOKIRM05603A')
-THEN koli_data__koli_custom_field__harga_barang * 0.015
+THEN custom_field__cod_value * 0.015
 WHEN customer_code = 'LOGBOSAMPUH04563A'
-THEN koli_data__koli_custom_field__harga_barang * 0.01
-ELSE koli_data__koli_custom_field__harga_barang * 0.02
+THEN custom_field__cod_value * 0.01
+ELSE custom_field__cod_value * 0.02
 END
 ELSE 0
 END
