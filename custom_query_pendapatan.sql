@@ -37,20 +37,31 @@ SUM(
 SUM(
 CASE
 -- COD dan bukan Shopee
-WHEN UPPER(custom_field__cod)!='NONCOD'
+WHEN UPPER(custom_field__cod)='COD'
 THEN
-CASE
-WHEN koli_data__koli_custom_field__harga_barang < 100000
-THEN 2000
-WHEN customer_code IN ('LOGKIRIMAJA04550A','LOGAUTOKIRIM05603A','LOGAUTOKIRM05603A')
-THEN custom_field__cod_value * 0.015
-WHEN customer_code = 'LOGBOSAMPUH04563A'
-THEN custom_field__cod_value * 0.01
-ELSE custom_field__cod_value * 0.02
+	(CASE
+	WHEN koli_data__koli_custom_field__harga_barang < 100000
+		THEN 2000
+	WHEN customer_code IN ('LOGKIRIMAJA04550A','LOGAUTOKIRIM05603A','LOGAUTOKIRM05603A')
+		THEN koli_data__koli_custom_field__harga_barang * 0.015
+	WHEN customer_code = 'LOGBOSAMPUH04563A'
+		THEN koli_data__koli_custom_field__harga_barang * 0.01
+	ELSE koli_data__koli_custom_field__harga_barang * 0.02
+	end)
+when UPPER(custom_field__cod)like '%CCOD%'
+then 
+	(CASE
+	WHEN koli_data__koli_custom_field__harga_barang < 100000
+		THEN 2000
+	WHEN customer_code IN ('LOGKIRIMAJA04550A','LOGAUTOKIRIM05603A','LOGAUTOKIRM05603A')
+		THEN custom_field__cod_value * 0.015
+	WHEN customer_code = 'LOGBOSAMPUH04563A'
+		THEN custom_field__cod_value * 0.01
+	ELSE custom_field__cod_value * 0.02
+	end)
+else 0
 END
-ELSE 0
-END
-) AS fee_cod,
+	) AS fee_cod,
 'NIPOS' sumber,
 SUM(nipos.nipos.connote__chargeable_weight)connote__chargeable_weight,
 SUM(connote__connote_surcharge_amount) HTNB
