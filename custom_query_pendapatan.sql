@@ -63,6 +63,7 @@ AND NOT (
     UPPER(nipos.customer_code) = 'DAGSHOPEE04120A'
     AND UPPER(nipos.custom_field__cod)!= 'NONCOD'
 )
+AND connote__connote_amount >=0
 GROUP BY
 1,2,3,4,5,6,7,8
 
