@@ -8,9 +8,7 @@ UPPER(connote__connote_service) AS connote__connote_service,
 connote_sender_custom_field__pks_no__to_be_verified,
 SUM(connote__connote_amount)connote__connote_amount,
 COUNT(connote__connote_code)connote__connote_code,
-SUM(
-nipos.connote__connote_service_price +nipos.connote__connote_surcharge_amount 
-)pendapatan,
+SUM(connote__connote_service_price +connote__connote_surcharge_amount )pendapatan,
 --pajak basetariff
 SUM(
   CASE 
@@ -19,7 +17,7 @@ SUM(
       OR custom_field__jenis_barang IS NULL
     THEN 0
 --    kiriman paket
-    ELSE 0.011*nipos.connote__connote_service_price 
+    ELSE 0.011*connote__connote_service_price 
   END
 )+
 --pajak insurance htnb
@@ -30,39 +28,12 @@ SUM(
       OR custom_field__jenis_barang IS NULL
     THEN 0
 --    kiriman paket
-    ELSE 0.11*nipos.connote__connote_surcharge_amount 
+    ELSE 0.11*connote__connote_surcharge_amount 
   END
 ) AS pajak,
-SUM(
-CASE
--- COD dan bukan Shopee
-WHEN UPPER(custom_field__cod)='COD'
-THEN
-	(CASE
-	WHEN koli_data__koli_custom_field__harga_barang < 100000
-		THEN 2000
-	WHEN customer_code IN ('LOGKIRIMAJA04550A','LOGAUTOKIRIM05603A','LOGAUTOKIRM05603A')
-		THEN koli_data__koli_custom_field__harga_barang * 0.015
-	WHEN customer_code = 'LOGBOSAMPUH04563A'
-		THEN koli_data__koli_custom_field__harga_barang * 0.01
-	ELSE koli_data__koli_custom_field__harga_barang * 0.02
-	end)
-when UPPER(custom_field__cod)like '%CCOD%'
-then 
-	(CASE
-	WHEN koli_data__koli_custom_field__harga_barang < 100000
-		THEN 2000
-	WHEN customer_code IN ('LOGKIRIMAJA04550A','LOGAUTOKIRIM05603A','LOGAUTOKIRM05603A')
-		THEN custom_field__cod_value * 0.015
-	WHEN customer_code = 'LOGBOSAMPUH04563A'
-		THEN custom_field__cod_value * 0.01
-	ELSE custom_field__cod_value * 0.02
-	end)
-else 0
-END
-	) AS fee_cod,
+SUM(custom_field__fee_value ) AS fee_cod,
 'NIPOS' sumber,
-SUM(nipos.nipos.connote__chargeable_weight)connote__chargeable_weight,
+SUM(connote__chargeable_weight)connote__chargeable_weight,
 SUM(connote__connote_surcharge_amount) HTNB
 FROM nipos.nipos
 WHERE connote__created_at > '20250101'
@@ -70,8 +41,8 @@ AND UPPER(connote__location_name) != 'AGP TESTING LOCATION'
 AND UPPER(connote__connote_state) NOT IN ('CANCEL','PENDING')
 AND connote__connote_service != 'LNINCOMING'
 AND NOT (
-    UPPER(nipos.customer_code) = 'DAGSHOPEE04120A'
-    AND UPPER(nipos.custom_field__cod)!= 'NONCOD'
+    UPPER(customer_code) = 'DAGSHOPEE04120A'
+    AND UPPER(custom_field__cod)!= 'NONCOD'
 )
 AND connote__connote_amount >=0
 GROUP BY
@@ -223,3 +194,22 @@ SUM(
     SUM(connote__connote_surcharge_amount) HTNB
 FROM nipos.v_nipos_cod_shopee_dashboard
 GROUP BY 1,2,3,4,5,6,7
+
+UNION
+SELECT 
+    distinct date('20250101') AS connote__created_at,
+    'DUMMY LOGISTIK' customer_code, 
+    'DUMMY LOGISTIK' custom_field__jenis_barang, 
+    nopen location_data_created__custom_field__nokprk, 
+    'DUMMY LOGISTIK' transform__channel, 
+    'DUMMY LOGISTIK' connote__connote_service, 
+    'DUMMY LOGISTIK' connote_sender_custom_field__pks_no__to_be_verified,
+    0 connote__connote_amount, 
+    0 connote__connote_code,
+    0 pendapatan,
+    0 pajak,
+    0 fee_cod,
+    'DUMMY LOGISTIK' sumber,
+    0 connote__chargeable_weight,
+    0 HTNB
+FROM referensi.target_kurlog_2025_new tkn
