@@ -39,7 +39,6 @@ FROM nipos.nipos
 WHERE connote__created_at > '20240101'
 AND UPPER(connote__location_name) != 'AGP TESTING LOCATION'
 AND UPPER(connote__connote_state) NOT IN ('CANCEL','PENDING')
-AND connote__connote_service != 'LNINCOMING'
 AND NOT (
     UPPER(customer_code) = 'DAGSHOPEE04120A'
     AND UPPER(custom_field__cod)!= 'NONCOD'
