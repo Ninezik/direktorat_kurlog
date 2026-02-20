@@ -101,7 +101,7 @@ and is_paid='t'
 GROUP BY
 1,2,3,4,5,6,7
 
-union ALL
+union
 
 select date(time_created)created_at ,
 'KARGO HAJI' customer_code,
@@ -118,7 +118,7 @@ SUM(ppn_beadasar+ppn_htnb) pajak,
 'KARGO HAJI' sumber,
 SUM(net_weight)connote__chargeable_weight,
 SUM(htnb)HTNB
-from kargo_haji_order
+from kargo.kargo_haji_order
 where status='1'
 and payment_status='0'
 GROUP BY
