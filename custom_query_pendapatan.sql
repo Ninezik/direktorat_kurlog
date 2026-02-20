@@ -99,7 +99,7 @@ and is_paid='t'
 GROUP BY
 1,2,3,4,5,6,7
 
-union ALL
+union
 
 select date(time_created)created_at ,
 'KARGO HAJI' customer_code,
