@@ -36,7 +36,7 @@ SUM(custom_field__fee_value ) AS fee_cod,
 SUM(connote__chargeable_weight)connote__chargeable_weight,
 SUM(connote__connote_surcharge_amount) HTNB
 FROM nipos.nipos
-WHERE connote__created_at > '20230101'
+WHERE connote__created_at > '20260220'
 AND UPPER(connote__location_name) != 'AGP TESTING LOCATION'
 AND UPPER(connote__connote_state) NOT IN ('CANCEL','PENDING')
 AND NOT(
@@ -48,6 +48,7 @@ GROUP BY
 1,2,3,4,5,6,7
 
 union
+
 SELECT
 DATE(t.created_at) connote__created_at,
 'AGRIPOS' customer_code,
@@ -77,6 +78,7 @@ and UPPER(t.status) ='SELESAI'
 GROUP BY
 1,2,3,4,5,6,7
 
+union 
 
 SELECT date(created_at)created_at ,
 'KARGO HAJI' customer_code,
@@ -99,7 +101,7 @@ and is_paid='t'
 GROUP BY
 1,2,3,4,5,6,7
 
-union
+union ALL
 
 select date(time_created)created_at ,
 'KARGO HAJI' customer_code,
@@ -143,6 +145,7 @@ FROM posint.LN_INCOMING_VA
 group by 1,2,3,4,5,6,7
 
 union
+
 SELECT 
     date(tgl_billing) connote__created_at,
     customer_code,
@@ -216,7 +219,8 @@ SUM(
 FROM nipos.v_nipos_cod_shopee_dashboard
 GROUP BY 1,2,3,4,5,6,7
 
-UNION
+union
+
 SELECT 
     distinct date('20250101') AS connote__created_at,
     'DUMMY LOGISTIK' customer_code, 
