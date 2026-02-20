@@ -36,7 +36,7 @@ SUM(custom_field__fee_value ) AS fee_cod,
 SUM(connote__chargeable_weight)connote__chargeable_weight,
 SUM(connote__connote_surcharge_amount) HTNB
 FROM nipos.nipos
-WHERE connote__created_at > '20240101'
+WHERE connote__created_at > '20230101'
 AND UPPER(connote__location_name) != 'AGP TESTING LOCATION'
 AND UPPER(connote__connote_state) NOT IN ('CANCEL','PENDING')
 AND NOT(
